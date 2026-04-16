@@ -1,4 +1,5 @@
 import argparse
+import os
 import sys
 import numpy as np
 import soundfile as sf
@@ -122,7 +123,7 @@ def main():
         description="Process audio to sound like background music."
     )
     parser.add_argument("input", help="Input audio file")
-    parser.add_argument("output", help="Output audio file")
+    parser.add_argument("output", nargs="?", help="Output audio file")
     parser.add_argument(
         "--intensity", type=float, default=0.7, help="Master control 0.0-1.0"
     )
@@ -144,6 +145,10 @@ def main():
     )
 
     args = parser.parse_args()
+
+    if args.output is None:
+        base, _ = os.path.splitext(args.input)
+        args.output = f"{base}_intensity_{args.intensity:.1f}.wav"
 
     print(f"Loading {args.input}...")
     audio, sr = sf.read(args.input)
